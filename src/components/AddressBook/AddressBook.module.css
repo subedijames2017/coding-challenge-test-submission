@@ -1,0 +1,285 @@
+/* ==========================================================================
+   AddressBook.module.css — Notebook page + colorful sticky notes (responsive)
+   ========================================================================== */
+
+/* === PAGE (notebook paper) ============================================== */
+.paper {
+  --ink: #0f172a;
+  --muted: #64748b;
+  --rule: rgba(59, 130, 246, 0.12);   /* blue horizontal rule */
+  --margin: rgba(239, 68, 68, 0.35);  /* red margin line */
+  --border: #e5e7eb;
+  --brand: #4f46e5;
+  --gutter: 56px;                     /* content offset from left margin line */
+
+  position: relative;
+  border-radius: 22px;
+  padding: clamp(16px, 2.4vw, 24px);
+  color: var(--ink);
+  background:
+    /* red vertical margin line */
+    linear-gradient(
+      to right,
+      transparent calc(var(--gutter) - 14px),
+      var(--margin) calc(var(--gutter) - 14px),
+      var(--margin) calc(var(--gutter) - 13px),
+      transparent calc(var(--gutter) - 13px)
+    ),
+    /* blue horizontal rules */
+    repeating-linear-gradient(to bottom, #fff 0 28px, var(--rule) 28px 29px);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 1px 2px rgba(16,24,40,.04),
+    0 10px 24px rgba(16,24,40,.08);
+  overflow: hidden;
+}
+
+/* perforated spiral holes on the far-left */
+.paper::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  bottom: 12px;
+  width: 18px;
+  background:
+    radial-gradient(circle at 50% 8px, #cbd5e1 3px, transparent 3.2px)
+      top center / 100% 28px repeat-y;
+  opacity: .9;
+  border-right: 1px dashed rgba(148,163,184,.6);
+}
+
+/* Align header, empty text and list to the gutter */
+.header,
+.empty,
+.list { padding-left: var(--gutter); }
+
+/* === HEADER ============================================================= */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.badge {
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(79,70,229,.08);
+  color: #3730a3;
+  border: 1px solid rgba(79,70,229,.35);
+  font-weight: 700;
+}
+
+/* === EMPTY STATE ======================================================== */
+.empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* === LIST =============================================================== */
+.list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding-right: 8px;
+  display: grid;
+  gap: 12px;
+}
+.row { margin: 0; }
+
+/* neutralize any Card chrome to avoid double borders */
+.paper :where(.card, .Card, .Card_root, .cardRoot) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* === SHEET (each address becomes a sticky note) ======================== */
+.sheet {
+  /* default sticky theme (overridden by nth-child below) */
+  --sticky: #fff6a8;      /* lemon */
+  --sticky-edge: #f2e98e; /* darker bottom edge */
+  --tape: rgba(240, 242, 247, 0.9);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* avatar | text | action */
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 10px;
+  min-width: 0; /* allow text to shrink inside grid */
+
+  /* sticky paper look */
+  background:
+    radial-gradient(120% 140% at 20% -20%, rgba(255,255,255,.6), transparent 40%),
+    linear-gradient(180deg, var(--sticky) 0%, var(--sticky-edge) 100%);
+  border: 0;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.05),
+    0 10px 18px rgba(16,24,40,.12),
+    0 2px 0 0 rgba(255,255,255,.6) inset;
+  transform: rotate(-0.15deg);
+  transition: transform .08s ease, box-shadow .15s ease, filter .2s ease;
+  margin-left: -8px; /* hug the margin line slightly */
+}
+.sheet:hover {
+  transform: rotate(0deg) translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.05),
+    0 12px 22px rgba(16,24,40,.16);
+}
+
+/* little washi tape */
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 36px;
+  width: 72px;
+  height: 22px;
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.4)),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 2px, rgba(0,0,0,.06) 2px 4px);
+  background-color: var(--tape);
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  transform: rotate(-2deg);
+  pointer-events: none;
+}
+
+/* slight alternating rotation for variety */
+.list > li:nth-child(2n) .sheet { transform: rotate(0.25deg); }
+.list > li:nth-child(2n) .sheet:hover { transform: rotate(0deg) translateY(-1px); }
+
+/* === STICKY PALETTE (automatic color cycling) ========================== */
+.list > li:nth-child(6n+1) .sheet { --sticky: #fff6a8; --sticky-edge: #f2e98e; } /* lemon */
+.list > li:nth-child(6n+2) .sheet { --sticky: #ffd6a8; --sticky-edge: #ffc48a; } /* peach */
+.list > li:nth-child(6n+3) .sheet { --sticky: #ffcfe3; --sticky-edge: #ffb8d7; } /* pink */
+.list > li:nth-child(6n+4) .sheet { --sticky: #d4f7c5; --sticky-edge: #bff1ad; } /* mint */
+.list > li:nth-child(6n+5) .sheet { --sticky: #cfe9ff; --sticky-edge: #b8dcff; } /* sky */
+.list > li:nth-child(6n+0) .sheet { --sticky: #eee7ff; --sticky-edge: #e0d6ff; } /* lavender */
+
+/* === CONTENT INSIDE A STICKY =========================================== */
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.65);
+  border: 2px solid rgba(79,70,229,.35);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: .02em;
+  backdrop-filter: blur(2px);
+  transform: translateX(-4px);
+}
+
+.text { min-width: 0; }
+.name {
+  margin: 0 0 2px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0b1220;
+}
+.addr {
+  font-size: .95rem;
+  color: #1f2a3a;
+  word-break: break-word;
+}
+
+.actions {
+  margin-left: 8px;
+  justify-self: end; /* keep button on the right in wide mode */
+}
+.actions :where(button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(99,102,241,.7);
+  background: rgba(255,255,255,.65);
+  color: #3e3ff6;
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: max-content;
+  transition: transform .08s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.actions :where(button):hover {
+  background: rgba(99,102,241,.10);
+  transform: translateY(-1px);
+}
+.actions :where(button):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99,102,241,.25);
+}
+.trash { line-height: 1; }
+
+/* normalize native <address> */
+.sheet address { margin: 0; font-style: normal; }
+
+/* === RESPONSIVE ======================================================== */
+
+/* Tablet-ish: tighten gutter slightly */
+@media (max-width: 820px) {
+  .paper { --gutter: 52px; }
+  .sheet  { margin-left: -8px; }
+  .avatar { transform: translateX(-2px); }
+}
+
+/* Phones: stack content, scale tape, make button full-width */
+@media (max-width: 560px) {
+  .paper { --gutter: 44px; }
+
+  .sheet {
+    grid-template-columns: 1fr;   /* single column */
+    gap: 10px;
+    padding: 14px 14px;
+    margin-left: -6px;
+    transform: none;              /* remove rotation to avoid clipping */
+  }
+
+  .sheet::before {
+    left: 22px;                   /* center the tape relative to smaller card */
+    width: 56px;
+    height: 18px;
+    top: -8px;
+    transform: rotate(-1deg);
+  }
+
+  .avatar { display: none; }      /* save space */
+  .name   { font-weight: 700; font-size: 1rem; }
+  .addr   { font-size: .95rem; }
+
+  .actions {
+    margin-left: 0;
+    justify-self: stretch;        /* take full row width */
+  }
+  .actions :where(button) {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 14px;
+    font-size: .95rem;
+  }
+}
+
+/* Very small phones: even tighter */
+@media (max-width: 380px) {
+  .paper { --gutter: 38px; }
+  .sheet { padding: 12px 12px; margin-left: -4px; }
+  .sheet::before { left: 18px; width: 50px; height: 16px; }
+}
+

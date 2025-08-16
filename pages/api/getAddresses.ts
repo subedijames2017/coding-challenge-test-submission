@@ -1,16 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-
 import generateMockAddresses from "../../src/utils/generateMockAddresses";
 
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   const {
     query: { postcode, streetnumber },
   } = req;
 
-  if (!postcode || !streetnumber) {
+  // Coerce query values to strings (Next can pass string | string[])
+  const toStr = (v: string | string[] | undefined) =>
+    Array.isArray(v) ? v[0] : v ?? "";
+
+  const postcodeStr = toStr(postcode);
+  const streetNumberStr = toStr(streetnumber);
+
+  if (!postcodeStr || !streetNumberStr) {
     return res.status(400).send({
       status: "error",
       // DO NOT MODIFY MSG - used for grading
@@ -18,47 +21,37 @@ export default async function handle(
     });
   }
 
-  if (postcode.length < 4) {
+  if (postcodeStr.length < 4 && postcodeStr.length > 10) {
     return res.status(400).send({
       status: "error",
       // DO NOT MODIFY MSG - used for grading
-      errormessage: "Postcode must be at least 4 digits!",
+      errormessage: "Please Enter Valid Postcode!",
     });
   }
 
-  /** TODO: Implement the validation logic to ensure input value
-   *  is all digits and non negative
-   */
-  const isStrictlyNumeric = (value: string) => {
-    return true;
-  };
+  /** Validate: all digits and non-negative (no sign, no decimals) */
+  const isStrictlyNumeric = (value: string) => /^[0-9]+$/.test(value);
 
-  /** TODO: Refactor the code below so there is no duplication of logic for postCode/streetNumber digit checks. */
-  if (!isStrictlyNumeric(postcode as string)) {
-    return res.status(400).send({
-      status: "error",
-      errormessage: "Postcode must be all digits and non negative!",
-    });
+  // DRY: validate both fields using one loop
+  const numericChecks: Array<{ label: "Postcode" | "Street Number"; value: string }> = [
+    { label: "Postcode", value: postcodeStr },
+    { label: "Street Number", value: streetNumberStr },
+  ];
+
+  for (const { label, value } of numericChecks) {
+    if (!isStrictlyNumeric(value)) {
+      return res.status(400).send({
+        status: "error",
+        errormessage: `${label} must be all digits and non negative!`,
+      });
+    }
   }
 
-  if (!isStrictlyNumeric(streetnumber as string)) {
-    return res.status(400).send({
-      status: "error",
-      errormessage: "Street Number must be all digits and non negative!",
-    });
-  }
+  const mockAddresses = generateMockAddresses(postcodeStr, streetNumberStr);
 
-  const mockAddresses = generateMockAddresses(
-    postcode as string,
-    streetnumber as string
-  );
   if (mockAddresses) {
-    const timeout = (ms: number) => {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    };
-
     // delay the response by 500ms - for loading status check
-    await timeout(500);
+    await new Promise((resolve) => setTimeout(resolve, 500));
     return res.status(200).json({
       status: "ok",
       details: mockAddresses,

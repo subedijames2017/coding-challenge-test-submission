@@ -1,0 +1,67 @@
+/* ==== FORCE FULL-WIDTH INPUTS ACROSS THE SECTION ==== */
+
+/* 1) One column always (each field spans the whole card) */
+.rows {
+  display: grid;
+  grid-template-columns: 1fr;   /* full width */
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+/* (remove the old @media that made 2 columns) */
+
+/* 2) Ensure no inner wrapper limits width */
+.formRow {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  width: 100%;
+}
+
+.formRow *,
+.formRow *::before,
+.formRow *::after {
+  box-sizing: border-box;
+}
+
+/* 3) Kill any max-width from InputText’s internal wrappers */
+.formRow :where(.inputWrapper, .inputRoot, .control, .field, .input) {
+  width: 100% !important;
+  max-width: none !important;
+  display: block;
+}
+
+/* 4) Actual form controls — fill the row */
+.formRow :where(input, select, textarea) {
+  width: 100% !important;
+  max-width: none !important;
+  height: 56px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #fff !important;
+  color: #0f172a;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  outline: none;
+}
+
+.formRow :where(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+/* 5) Button bar stays full width on mobile, left-aligned on desktop */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+@media (max-width: 639px) {
+  .actions { justify-content: stretch; }
+  .actions > * { width: 100%; }
+}
+
+/* 6) If Section imposed a max-width on forms, override it here */
+/* :global(.section) form {
+  max-width: none !important;
+} */

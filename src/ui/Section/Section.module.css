@@ -1,0 +1,80 @@
+/* Section.module.css */
+
+.section {
+  /* component-scoped tokens */
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --border: rgba(15, 23, 42, 0.08);
+  --ring: rgba(79, 70, 229, 0.18);
+
+  background: var(--bg);
+  color: var(--fg);
+
+  /* modern card look */
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: clamp(16px, 2.5vw, 28px);
+
+  /* soft layered shadow */
+  box-shadow:
+    0 1px 1px rgba(16, 24, 40, .06),
+    0 8px 24px rgba(16, 24, 40, .08);
+
+  /* subtle separation from page bg */
+  backdrop-filter: saturate(1.1) blur(2px);
+}
+
+/* light/dark “themes” via variables */
+.light {
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --border: rgba(15, 23, 42, 0.08);
+}
+
+.dark {
+  --bg: radial-gradient(120% 120% at 0% 0%, #0f172a 0%, #141925 60%, #0d1220 100%);
+  --fg: #e5e7eb;
+  --muted: #a8b1c7;
+  --border: rgba(148, 163, 184, 0.14);
+}
+
+/* nicer headings when you drop <h1>/<h2> inside Section */
+.section :where(h1, h2) {
+  margin: 0 0 .5rem 0;
+  line-height: 1.2;
+  letter-spacing: -0.0125em;
+}
+
+.section :where(h1) {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 700;
+}
+
+.section :where(h1 > small) {
+  display: block;
+  margin-top: .375rem;
+  font-size: clamp(14px, 1.4vw, 16px);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* tidy vertical rhythm for anything stacked inside */
+.section > * + * {
+  margin-top: 1rem;
+}
+
+/* mild focus outline if Section contains focusable children */
+.section:focus-within {
+  box-shadow:
+    0 0 0 4px var(--ring),
+    0 1px 1px rgba(16, 24, 40, .06),
+    0 8px 24px rgba(16, 24, 40, .08);
+  border-color: transparent;
+}
+
+/* keep long content from hitting the edges */
+.section :where(form, .content) {
+  max-width: 820px;
+}

@@ -1,0 +1,32 @@
+.button {
+    font-family: var(--font-primary, system-ui, -apple-system, sans-serif);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.05s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  
+  .button:active { transform: translateY(1px); }
+  
+  /* Brand color for both variants */
+  .primary {
+    background: #413ef7;
+    color: white;
+  }
+  
+  .primary:hover {
+    box-shadow: 0 6px 18px rgba(65, 62, 247, 0.35);
+  }
+  
+  .secondary {
+    background: transparent;
+    color: #413ef7;
+    border-color: #413ef7;
+  }
+  
+  .secondary:hover {
+    background: rgba(65, 62, 247, 0.06);
+  }
+  

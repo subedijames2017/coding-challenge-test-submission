@@ -2,28 +2,36 @@ import { Address } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-// Define a type for the slice state
-interface CounterState {
+// Slice state
+interface AddressBookState {
   addresses: Address[];
 }
 
-// Define the initial state using that type
-const initialState: CounterState = {
+const initialState: AddressBookState = {
   addresses: [],
 };
 
 export const addressBookSlice = createSlice({
-  name: "address",
-  // `createSlice` will infer the state type from the `initialState` argument
+  name: "addressBook",
   initialState,
   reducers: {
+    // Upsert-safe add: replace if same id exists, else push
     addAddress: (state, action: PayloadAction<Address>) => {
-      /** TODO: Prevent duplicate addresses */
-      state.addresses.push(action.payload);
+      const index = state.addresses.findIndex(a => a.id === action.payload.id);
+      if (index !== -1) {
+        // Replace at the same position
+        state.addresses[index] = action.payload;
+      } else {
+        // Add new if not found
+        state.addresses.push(action.payload);
+      }
     },
+    // Remove by id (payload is the id string)
     removeAddress: (state, action: PayloadAction<string>) => {
-      /** TODO: Write a state update which removes an address from the addresses array. */
+      state.addresses = state.addresses.filter(a => a.id !== action.payload);
     },
+
+    // Replace whole list
     updateAddresses: (state, action: PayloadAction<Address[]>) => {
       state.addresses = action.payload;
     },
@@ -33,7 +41,10 @@ export const addressBookSlice = createSlice({
 export const { addAddress, removeAddress, updateAddresses } =
   addressBookSlice.actions;
 
-// // Other code such as selectors can use the imported `RootState` type
+// Selectors
 export const selectAddress = (state: RootState) => state.addressBook.addresses;
+export const selectAddressById =
+  (id: string) => (state: RootState) =>
+    state.addressBook.addresses.find(a => a.id === id);
 
 export default addressBookSlice.reducer;
