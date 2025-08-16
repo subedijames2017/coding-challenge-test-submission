@@ -1,14 +1,9 @@
 // @ts-check
-
-/**
- * @type {import('next').NextConfig}
- **/
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  experimental: {
-    appDir: true
-  }
+  // no swcMinify
+  // no experimental.appDir
 };
 
 module.exports = nextConfig;

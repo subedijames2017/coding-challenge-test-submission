@@ -110,7 +110,7 @@
   /* default sticky theme (overridden by nth-child below) */
   --sticky: #fff6a8;      /* lemon */
   --sticky-edge: #f2e98e; /* darker bottom edge */
-  --tape: rgba(240, 242, 247, 0.9);
+  --tape: #7dc1eb;
 
   position: relative;
   display: grid;

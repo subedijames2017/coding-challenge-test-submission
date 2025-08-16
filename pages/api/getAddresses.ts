@@ -13,16 +13,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
   const postcodeStr = toStr(postcode);
   const streetNumberStr = toStr(streetnumber);
 
+  // Missing fields
   if (!postcodeStr || !streetNumberStr) {
-    return res.status(400).send({
+    return res.status(400).json({
       status: "error",
       // DO NOT MODIFY MSG - used for grading
       errormessage: "Postcode and street number fields mandatory!",
     });
   }
 
-  if (postcodeStr.length < 4 && postcodeStr.length > 10) {
-    return res.status(400).send({
+  // Postcode length (valid range 4–10)
+  if (postcodeStr.length < 4 || postcodeStr.length > 10) {
+    return res.status(400).json({
       status: "error",
       // DO NOT MODIFY MSG - used for grading
       errormessage: "Please Enter Valid Postcode!",
@@ -40,7 +42,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
   for (const { label, value } of numericChecks) {
     if (!isStrictlyNumeric(value)) {
-      return res.status(400).send({
+      return res.status(400).json({
         status: "error",
         errormessage: `${label} must be all digits and non negative!`,
       });
