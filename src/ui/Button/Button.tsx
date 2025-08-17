@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ButtonType } from "../../types/button"; // adjust if you moved types
+import { ButtonType } from "../../types/button";
 import $ from "./Button.module.css";
 
 type ButtonVariant = "primary" | "secondary";

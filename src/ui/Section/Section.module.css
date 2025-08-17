@@ -1,7 +1,7 @@
 /* Section.module.css */
 
 .section {
-  /* component-scoped tokens */
+  font-family: var(--font-primary);
   --bg: #ffffff;
   --fg: #0f172a;
   --muted: #64748b;
